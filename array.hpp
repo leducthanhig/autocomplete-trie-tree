@@ -15,17 +15,17 @@ void quickSort(vector<pair<string, uint64>>* dict, int l, int r, bool (*comparat
     int i = l, j = r;
     auto m = dict->at(l + (r - l) / 2);
 
-    while (++comparisons && i <= j) {
-        while (++comparisons && comparator(dict->at(i), m)) i++;
-        while (++comparisons && comparator(m, dict->at(j))) j--;
-        if (++comparisons && i <= j) {
+    while (i <= j) {
+        while (comparator(dict->at(i), m)) i++;
+        while (comparator(m, dict->at(j))) j--;
+        if (i <= j) {
             swap(dict->at(i), dict->at(j));
             i++; j--;
         }
     }
 
-    if (++comparisons && i < r) quickSort(dict, i, r, comparator);
-    if (++comparisons && l < j) quickSort(dict, l, j, comparator);
+    if (i < r) quickSort(dict, i, r, comparator);
+    if (l < j) quickSort(dict, l, j, comparator);
 }
 
 vector<pair<string, uint64>>* createArray() {
@@ -55,13 +55,11 @@ vector<string> getAllWords(vector<pair<string, uint64>>* dict, int l, int r, int
     limit = min(static_cast<int>(subDict->size()), limit);
     int cnt = limit;
     
-    ++comparisons;
     for (auto& word: *subDict) {
-        ++comparisons;
-        if (++comparisons && word.first.size() >= LENGTH_LEAST) {
+        if (word.first.size() >= LENGTH_LEAST) {
             words.push_back(word.first);
             cnt--;
-            if (++comparisons && !cnt) break;
+            if (!cnt) break;
         }
     }
     
@@ -71,23 +69,23 @@ vector<string> getAllWords(vector<pair<string, uint64>>* dict, int l, int r, int
 
 vector<string> search(vector<pair<string, uint64>>* dict, const string& prefix, int limit = SEARCH_RESULT_LIMIT) {
     int l = 0, r = static_cast<int>(dict->size()) - 1;
-    while (++comparisons && l < r) {
+    while (l < r) {
         int m = l + (r - l) / 2;
-        if (++comparisons && prefix <= dict->at(m).first.substr(0, prefix.size())) r = m;
+        if (prefix <= dict->at(m).first.substr(0, prefix.size())) r = m;
         else l = m + 1;
     }
 
-    if (++comparisons && dict->at(l).first.substr(0, prefix.size()) != prefix) return {};
+    if (dict->at(l).first.substr(0, prefix.size()) != prefix) return {};
 
     int start = l + 1;
     r = static_cast<int>(dict->size()) - 1;
-    while (++comparisons && l < r) {
+    while (l < r) {
         int m = l + (r - l + 1) / 2;
-        if (++comparisons && dict->at(m).first.substr(0, prefix.size()) <= prefix) l = m;
+        if (dict->at(m).first.substr(0, prefix.size()) <= prefix) l = m;
         else r = m - 1;
     }
 
-    if (++comparisons && r < start) return {};
+    if (r < start) return {};
 
     return getAllWords(dict, start, r, limit);
 }

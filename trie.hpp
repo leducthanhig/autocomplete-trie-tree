@@ -11,7 +11,6 @@ struct TrieNode {
 
 struct Comparator {
     bool operator()(const pair<TrieNode*, string>& p1, const pair<TrieNode*, string>& p2) {
-        ++comparisons;
         return p1.first->maxChildrenWeight < p2.first->maxChildrenWeight;
     }
 };
@@ -73,7 +72,7 @@ TrieNode* createTrie() {
 }
 
 vector<string> getAllWords(TrieNode* pRoot, const string& prefix, int limit = SEARCH_RESULT_LIMIT) {
-    if (++comparisons && !pRoot) return {};
+    if (!pRoot) return {};
 
     priority_queue<pair<TrieNode*, string>, vector<pair<TrieNode*, string>>, Comparator> pq;
     pq.push({ pRoot, prefix });
@@ -81,18 +80,18 @@ vector<string> getAllWords(TrieNode* pRoot, const string& prefix, int limit = SE
     TrieNode* curNode = nullptr;
     string word;
     vector<string> words;
-    while (++comparisons && pq.size()) {
+    while (pq.size()) {
         curNode = pq.top().first;
         word = pq.top().second + ' ';
         pq.pop();
 
-        for (int i = 0; ++comparisons && i < 26; i++) {
+        for (int i = 0; i < 26; i++) {
             TrieNode* child = curNode->children[i];
-            if (++comparisons && child) {
+            if (child) {
                 word.back() = 'a' + i;
-                if (++comparisons && child->weight == curNode->maxChildrenWeight && ++comparisons && word.size() >= LENGTH_LEAST) {
+                if (child->weight == curNode->maxChildrenWeight && word.size() >= LENGTH_LEAST) {
                     words.push_back(word);
-                    if (++comparisons && words.size() == limit) return words;
+                    if (words.size() == limit) return words;
                 }
                 pq.push({ child, word });
             }
@@ -102,14 +101,12 @@ vector<string> getAllWords(TrieNode* pRoot, const string& prefix, int limit = SE
 }
 
 vector<string> search(TrieNode* pRoot, const string& prefix, int limit = SEARCH_RESULT_LIMIT) {
-    if (++comparisons && !pRoot) return {};
+    if (!pRoot) return {};
     
     TrieNode* curNode = pRoot;
-    ++comparisons;
     for (char ch: prefix) {
-        ++comparisons;
         ch -= 'a';
-        if (++comparisons && !curNode->children[ch]) {
+        if (!curNode->children[ch]) {
             return {};
         }
         curNode = curNode->children[ch];
