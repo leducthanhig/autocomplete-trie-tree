@@ -1,6 +1,7 @@
 #include "trie.hpp"
 
 int main() {
+    system("cls");
     cout << "Importing dictionary...\n";
     TrieNode* root = createTrie();
     
