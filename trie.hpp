@@ -4,7 +4,7 @@
 #include "utils.hpp"
 
 struct TrieNode {
-    TrieNode* children[26]{nullptr};
+    TrieNode* children[26] = {nullptr};
     uint64 weight = 0, maxChildrenWeight = 0;
     int childrenCount = 0;
 };
